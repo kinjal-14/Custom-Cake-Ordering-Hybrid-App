@@ -154,21 +154,21 @@ class _LoginState extends State<Login> {
         ));
   }
 
-  // void login(String email, String password) async {
-  //
-  //   if (_formKey.currentState!.validate()) {
-  //     await _auth
-  //         .signInWithEmailAndPassword(email: email, password: password)
-  //         .then((uid) => {
-  //               Fluttertoast.showToast(msg: "Login Successful"),
-  //               Navigator.pushNamed(context, "/home")
-  //             })
-  //         .catchError((e) {
-  //       Fluttertoast.showToast(msg: e!.message);
-  //       var snackBar = SnackBar(content: Text(e!.message));
-  //       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //
-  //     });
-  //   }
-  // }
+  void login(String email, String password) async {
+
+    if (_formKey.currentState!.validate()) {
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((uid) => {
+                Fluttertoast.showToast(msg: "Login Successful"),
+                Navigator.pushNamed(context, "/home")
+              })
+          .catchError((e) {
+        Fluttertoast.showToast(msg: e!.message);
+        var snackBar = SnackBar(content: Text(e!.message));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      });
+    }
+  }
 }
