@@ -15,7 +15,7 @@ class _SplashState extends State<Splash> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // Timer(Duration(seconds: 5),() => Navigator.pushNamed(context, "/home"));
+    Timer(Duration(seconds: 5),() => Navigator.pushNamed(context, "/home"));
   }
   @override
   Widget build(BuildContext context) {
