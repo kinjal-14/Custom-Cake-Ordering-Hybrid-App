@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "605988518161",
+    "project_id": "cake-dreams-flutter",
+    "storage_bucket": "cake-dreams-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:605988518161:android:65fcccd6879d01a871b4b0",
+        "android_client_info": {
+          "package_name": "com.example.cake_dreams"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "605988518161-78tvpr59it0noi49jh2d3bu07off3jc6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrbTqRQbdlzqqzW6TKSecmlBEKcT9AEAw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "605988518161-78tvpr59it0noi49jh2d3bu07off3jc6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
