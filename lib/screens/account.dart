@@ -17,23 +17,23 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  // User? user = FirebaseAuth.instance.currentUser;
-  // UserModel currentUser = UserModel();
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   FirebaseFirestore.instance
-  //       .collection("users")
-  //       .doc(user!.uid)
-  //       .get()
-  //       .then((value) {
-  //     this.currentUser = UserModel.fromMap(value.data());
-  //     setState(() {
-  //
-  //     });
-  //   });
-  // }
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel currentUser = UserModel();
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      this.currentUser = UserModel.fromMap(value.data());
+      setState(() {
+
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,9 +153,9 @@ class _AccountState extends State<Account> {
       ),
     );
   }
-  // Future<void> logout(BuildContext context) async{
-  //   await FirebaseAuth.instance.signOut();
-  //   Navigator.pushNamed(context, "/home");
-  //
-  // }
+  Future<void> logout(BuildContext context) async{
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushNamed(context, "/home");
+
+  }
 }
