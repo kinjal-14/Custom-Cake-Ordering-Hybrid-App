@@ -181,6 +181,7 @@ class _SignupState extends State<Signup> {
                     child: const Text('Sign up'),
                   ),
                 ),
+
                 SizedBox(
                   height: 20.0,
                 ),
