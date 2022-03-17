@@ -98,7 +98,7 @@ class _AccountState extends State<Account> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: InkWell(
-                        // onTap: () => {Navigator.pushNamed(context, "/profile")},
+                        onTap: () => {Navigator.pushNamed(context, "/profile")},
                         child: CustomizeGreyCard(
                             text1: "Profile",
                             text2: ">",
