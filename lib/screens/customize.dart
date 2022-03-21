@@ -4,9 +4,13 @@ import 'package:cake_dreams/widgets/appbar_iconbutton.dart';
 import 'package:cake_dreams/widgets/custom_button.dart';
 import 'package:cake_dreams/widgets/customize_card.dart';
 import 'package:cake_dreams/widgets/customize_greycard.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uuid/uuid.dart';
+import '../models/cart_model.dart';
 
 class Customize extends StatefulWidget {
   const Customize({Key? key}) : super(key: key);
@@ -18,6 +22,7 @@ class Customize extends StatefulWidget {
 class _CustomizeState extends State<Customize> {
   int counter = 0;
   int qty = 1;
+  int price = 100;
   var shapecolor = Color(0xff999999);
   var sizecolor = Color(0xff999999);
   var flavourcolor = Color(0xff999999);
@@ -29,7 +34,10 @@ class _CustomizeState extends State<Customize> {
   var design = "Makeup";
   var selectedOptions = [];
   List<Category> categories = Category.custom_types;
-
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController noteController = new TextEditingController();
+  User? user = FirebaseAuth.instance.currentUser;
+  final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     final List<MainCategory> maincategory = MainCategory.custom_maincategory;
@@ -282,7 +290,12 @@ class _CustomizeState extends State<Customize> {
                         bgcolor: Color(0xfff77883),
                         text: 'Add to Cart',
                         onclick: () {
-                          incrementCounter();
+                          addToCart(
+                              "Customized cake",
+                              qty,
+                              price,
+                              "Customize Cake",
+                          type,shape,size,design,flavour,noteController.text);
                         },
                       ),
                       CustomButton(
@@ -305,6 +318,7 @@ class _CustomizeState extends State<Customize> {
                             design = "Makeup";
                             selectedOptions.clear();
                             qty = 1;
+                            price = 100;
                           });
                         },
                       ),
@@ -364,24 +378,33 @@ class _CustomizeState extends State<Customize> {
               right: 5.0,
               child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                  child: TextField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    style: TextStyle(
-                        fontSize: 17.0, height: 1.0, color: Colors.black),
-                    decoration: InputDecoration(
+                  child: Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      onSaved: (value) {
+                        noteController.text = value!;
+                      },
 
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.black),
-                          // borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.black),
-                          // borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        hintText: 'Enter Note'),
+                      controller: noteController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      textInputAction: TextInputAction.done,
+                      style: TextStyle(
+                          fontSize: 17.0, height: 1.0, color: Colors.black),
+                      decoration: InputDecoration(
+
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.black),
+                            // borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                const BorderSide(color: Colors.black),
+                            // borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          hintText: 'Enter Note'),
+                    ),
                   )),
             ),
             Positioned(
@@ -395,7 +418,7 @@ class _CustomizeState extends State<Customize> {
                       width: (MediaQuery.of(context).size.width / 2.2),
                       height: 45.0,
                       text1: "PRICE:",
-                      text2: '\$100',
+                      text2: '\$${price}',
                       font_size: 17.0,
                     ),
                     SizedBox(
@@ -467,6 +490,37 @@ class _CustomizeState extends State<Customize> {
         ],
       ),
     );
+  }
+  void addToCart(name, qty, price, type, customType, shape, size, flavour, design, note) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = _auth.currentUser;
+    var uuid = Uuid();
+    var id =  uuid.v1();
+    var image = "cake_four.jpeg";
+    CartModel cartModel = CartModel();
+    cartModel.id = id;
+    cartModel.image = image;
+    cartModel.name = name;
+    cartModel.qty = qty;
+    cartModel.price = price;
+    cartModel.type = type;
+    cartModel.customType = customType;
+    cartModel.shape = shape;
+    cartModel.size = size;
+    cartModel.flavour = flavour;
+    cartModel.design = design;
+    cartModel.note = note;
+
+
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(user?.uid)
+        .collection("cart")
+        .doc(id.toString())
+        .set(cartModel.toMap());
+    Fluttertoast.showToast(msg: "Product Added to Cart");
+
   }
 }
 
