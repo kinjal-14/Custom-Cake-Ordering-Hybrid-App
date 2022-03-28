@@ -3,10 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../models/cart_model.dart';
 import '../models/premade_products.dart';
-
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 class Detail extends StatefulWidget {
   const Detail({Key? key}) : super(key: key);
 
@@ -100,7 +101,7 @@ class _DetailState extends State<Detail> {
             ),
           ),
           Positioned(
-              bottom: 50,
+              bottom: 30,
               top: (MediaQuery.of(context).size.height) / 1.55,
               child: Column(
                 //     crossAxisAlignment: CrossAxisAlignment.center,
@@ -174,15 +175,62 @@ class _DetailState extends State<Detail> {
                                       // fontWeight: FontWeight.bold
                                     ),
                                   ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Rating:",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      RatingBar.builder(
+                                        initialRating: 3,
+                                        minRating: 1,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: false,
+                                        itemCount: 5,
+                                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                        itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          color: Color(0xfff77883),
+                                        ), onRatingUpdate: (rating) {
+                                        print(rating);
+                                      },)
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Share Cake Information: ",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        width: 30,
+                                        decoration: new BoxDecoration(
+                                            color: Color(0xfff77883),
+                                            borderRadius: BorderRadius.circular(30.0)),
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            Icons.share,
+                                            size: 15,
+                                          ),
+                                          color: Colors.white,
+                                          onPressed: () async{
+                                            await Share.share('cute');
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  )
+
                                 ],
                               ),
-                              Text(
-                                "Rating:",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black,
-                                ),
-                              ),
+
                             ],
                           ),
                         ],
@@ -302,12 +350,18 @@ class _DetailState extends State<Detail> {
     User? user = _auth.currentUser;
 
     CartModel cartModel = CartModel();
-    cartModel.id = id;
+    cartModel.id = id.toString();
     cartModel.image = image;
     cartModel.name = name;
     cartModel.qty = qty;
     cartModel.price = price;
     cartModel.type = type;
+    cartModel.customType = "";
+    cartModel.shape = "";
+    cartModel.size = "";
+    cartModel.flavour = "";
+    cartModel.design = "";
+    cartModel.note = "";
 
     await firebaseFirestore
         .collection("users")
