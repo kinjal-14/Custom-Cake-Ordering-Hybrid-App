@@ -161,7 +161,13 @@ class _LoginState extends State<Login> {
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uid) => {
                 Fluttertoast.showToast(msg: "Login Successful"),
-                Navigator.pushNamed(context, "/home")
+                  if(email == "admin@gmail.com" && password == "Admin@123"){
+                    Navigator.pushNamed(context, "/adminHome")
+                  }
+                  else{
+                    Navigator.pushNamed(context, "/home")
+                  }
+
               })
           .catchError((e) {
         Fluttertoast.showToast(msg: e!.message);
