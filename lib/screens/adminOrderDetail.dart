@@ -598,33 +598,33 @@ class _AdminOrderDetailState extends State<AdminOrderDetail> {
     Navigator.pushNamed(context, "/adminOrders");
 
   }
-  // void sendNotification(id,status){
-  //   tz.initializeTimeZones();
-  //   var time = DateTime.now().add(Duration(seconds: 10));
-  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-  //   AndroidNotificationDetails('Cake dreams', 'CAKE DREAMS',
-  //       channelDescription: 'Cake bakery',
-  //       importance: Importance.max,
-  //       priority: Priority.high,
-  //       ticker: 'ticker');
-  //   const IOSNotificationDetails  iosPlatformChannelSpecifics=
-  //   IOSNotificationDetails(
-  //       presentAlert: true,presentBadge: true,presentSound: true);
-  //   const NotificationDetails platformChannelSpecifics =
-  //   NotificationDetails(android: androidPlatformChannelSpecifics,iOS: iosPlatformChannelSpecifics);
-  //
-  //   flutterLocalNotificationsPlugin.zonedSchedule(
-  //       0,
-  //       'CAKE DREAMS',
-  //       'Your order #${id} is ${status}',
-  //       tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-  //       const NotificationDetails(
-  //           android: AndroidNotificationDetails(
-  //               'Cake dreams', 'CAKE DREAMS',
-  //               channelDescription: 'Cake bakery')),
-  //       androidAllowWhileIdle: true,
-  //       uiLocalNotificationDateInterpretation:
-  //       UILocalNotificationDateInterpretation.absoluteTime);
-  //
-  // }
+  void sendNotification(id,status){
+    tz.initializeTimeZones();
+    var time = DateTime.now().add(Duration(seconds: 10));
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails('Cake dreams', 'CAKE DREAMS',
+        channelDescription: 'Cake bakery',
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker');
+    const IOSNotificationDetails  iosPlatformChannelSpecifics=
+    IOSNotificationDetails(
+        presentAlert: true,presentBadge: true,presentSound: true);
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics,iOS: iosPlatformChannelSpecifics);
+
+    flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        'CAKE DREAMS',
+        'Your order #${id} is ${status}',
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+        const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'Cake dreams', 'CAKE DREAMS',
+                channelDescription: 'Cake bakery')),
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime);
+
+  }
 }
