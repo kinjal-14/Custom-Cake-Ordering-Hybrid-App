@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../models/cart_products.dart';
 import '../widgets/appbar.dart';
@@ -186,7 +187,7 @@ class _CartState extends State<Cart> {
                                       fontWeight: FontWeight.w600),
                                 ),
                                 Text(
-                                  "\$${getTotal().deliveryFee()}",
+                                  "\$${getTotal().deliveryFee().toInt().toDouble()}",
                                   style: TextStyle(
                                     fontSize: 16.0,
                                     color: Colors.black,
@@ -205,7 +206,7 @@ class _CartState extends State<Cart> {
                                       fontWeight: FontWeight.w600),
                                 ),
                                 Text(
-                                  "\$${getTotal().tax()}",
+                                  "\$${getTotal().tax().toInt().toDouble()}",
                                   style: TextStyle(
                                     fontSize: 16.0,
                                     color: Colors.black,
@@ -224,7 +225,7 @@ class _CartState extends State<Cart> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  "\$${getTotal().total()}",
+                                  "\$${getTotal().total().toInt().toDouble()}",
                                   style: TextStyle(
                                       fontSize: 20.0,
                                       color: Colors.black,
@@ -247,7 +248,7 @@ class _CartState extends State<Cart> {
                     bgcolor: Color(0xfff77883),
                     text: 'Order',
                     onclick: () {
-                      Navigator.pushNamed(context, "/shipping");
+                     order(getTotal().subTotal,getTotal().deliveryFee(),getTotal().tax(),getTotal().total(),products);
                     },
                   ),
                 ],
@@ -267,6 +268,16 @@ class _CartState extends State<Cart> {
         .delete();
     products.clear();
     fetchProducts(user!.uid);
+  }
+  void order(subtotal,delivery,tax,total,products) {
+    if(total > 0.0) {
+      Navigator.pushNamed(
+          context, "/shipping", arguments: {'subtotal': subtotal,
+        'delivery': delivery, 'tax': tax,
+        'total': total, 'products': products});
+    }else{
+      Fluttertoast.showToast(msg: "Your shopping cart is empty. Add some products to continue");
+    }
   }
 }
 
