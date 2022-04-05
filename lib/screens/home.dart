@@ -1,12 +1,18 @@
+
+
 import 'package:cake_dreams/widgets/appbar_iconbutton.dart';
 import 'package:cake_dreams/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../main.dart';
 import '../models/premade_products.dart';
-
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -40,6 +46,9 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
     fetchProducts();
+    FirebaseMessaging.onMessage.listen((event) {
+      print("FCM message received");
+    });
   }
 
   fetchProducts() async {
@@ -182,12 +191,17 @@ class _HomeState extends State<Home> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Available Now",
-                      style: TextStyle(
-                          fontSize: 20.0,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
+                    InkWell(
+                      onTap: (){
+                        sendNotification();
+                      },
+                      child: Text(
+                        "Available Now",
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                     SizedBox(
                       width: (MediaQuery.of(context).size.width) / 2.6,
@@ -380,5 +394,36 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
+  }
+  void sendNotification(){
+    tz.initializeTimeZones();
+    var time = DateTime.now().add(Duration(seconds: 10));
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails('your channel id', 'your channel name',
+        channelDescription: 'your channel description',
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker');
+    const IOSNotificationDetails  iosPlatformChannelSpecifics=
+    IOSNotificationDetails(
+       presentAlert: true,presentBadge: true,presentSound: true);
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics,iOS: iosPlatformChannelSpecifics);
+    // flutterLocalNotificationsPlugin.schedule(
+    //     0, 'plain title', 'plain body', platformChannelSpecifics,
+    //     payload: 'item x');
+    flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        'scheduled title',
+        'scheduled body',
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+        const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'your channel id', 'your channel name',
+                channelDescription: 'your channel description')),
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime);
+
   }
 }
