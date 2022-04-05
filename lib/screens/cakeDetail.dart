@@ -2,12 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../models/cart_model.dart';
 import '../models/premade_products.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 class Detail extends StatefulWidget {
   const Detail({Key? key}) : super(key: key);
 
@@ -190,13 +193,16 @@ class _DetailState extends State<Detail> {
                                         direction: Axis.horizontal,
                                         allowHalfRating: false,
                                         itemCount: 5,
-                                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                        itemPadding: EdgeInsets.symmetric(
+                                            horizontal: 4.0),
                                         itemBuilder: (context, _) => Icon(
                                           Icons.star,
                                           color: Color(0xfff77883),
-                                        ), onRatingUpdate: (rating) {
-                                        print(rating);
-                                      },)
+                                        ),
+                                        onRatingUpdate: (rating) {
+                                          print(rating);
+                                        },
+                                      )
                                     ],
                                   ),
                                   Row(
@@ -213,24 +219,34 @@ class _DetailState extends State<Detail> {
                                         width: 30,
                                         decoration: new BoxDecoration(
                                             color: Color(0xfff77883),
-                                            borderRadius: BorderRadius.circular(30.0)),
+                                            borderRadius:
+                                                BorderRadius.circular(30.0)),
                                         child: IconButton(
                                           icon: const Icon(
                                             Icons.share,
                                             size: 15,
                                           ),
                                           color: Colors.white,
-                                          onPressed: () async{
-                                            await Share.share('cute');
+                                          onPressed: () {
+                                            String message =
+                                                "------Cake Dreams-------"
+                                                "\nName: ${product.name}"
+                                                "\nDescription: ${product.desc}"
+                                                "\nSize: ${product.size}"
+                                                "\nCalories: ${product.calories}"
+                                                "\nPrice: \$${product.price}";
+                                            List<String> recipents = [];
+
+                                            _sendSMS(message, recipents);
+
+                                            // await launch('sms:+1(514)992-7751?body=hi');
                                           },
                                         ),
                                       ),
                                     ],
                                   )
-
                                 ],
                               ),
-
                             ],
                           ),
                         ],
@@ -345,6 +361,14 @@ class _DetailState extends State<Detail> {
     );
   }
 
+  void _sendSMS(String message, List<String> recipents) async {
+    String _result = await sendSMS(message: message, recipients: recipents)
+        .catchError((onError) {
+      print(onError);
+    });
+    print(_result);
+  }
+
   void addToCart(id, image, name, qty, price, type) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
@@ -369,7 +393,6 @@ class _DetailState extends State<Detail> {
         .collection("cart")
         .doc(id.toString())
         .set(cartModel.toMap());
-     Fluttertoast.showToast(msg: "Product Added to Cart");
-   
+    Fluttertoast.showToast(msg: "Product Added to Cart");
   }
 }
