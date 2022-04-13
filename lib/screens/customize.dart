@@ -120,7 +120,7 @@ class _CustomizeState extends State<Customize> {
                       bg_color: Color(0xfff77883),
                       color: Colors.white,
                       icon_name: Icon(Icons.shopping_cart_outlined, size: 19),
-                      onclick: () {}),
+                      onclick: () {Navigator.pushNamed(context, "/cart");}),
                 ],
               ),
             ),
