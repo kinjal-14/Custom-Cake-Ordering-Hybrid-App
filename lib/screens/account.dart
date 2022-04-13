@@ -110,7 +110,7 @@ class _AccountState extends State<Account> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: InkWell(
-                        // onTap: () => {Navigator.pushNamed(context, "/profile")},
+                        onTap: () => {Navigator.pushNamed(context, "/order")},
                         child: CustomizeGreyCard(
                             text1: "Your Orders",
                             text2: ">",
@@ -122,7 +122,7 @@ class _AccountState extends State<Account> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: InkWell(
-                        // onTap: () => {Navigator.pushNamed(context, "/profile")},
+                        onTap: () => {Navigator.pushNamed(context, "/contact")},
                         child: CustomizeGreyCard(
                             text1: "Contact Us",
                             text2: ">",
