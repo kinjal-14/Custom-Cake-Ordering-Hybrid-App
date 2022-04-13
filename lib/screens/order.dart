@@ -27,17 +27,17 @@ class _OrderState extends State<Order> {
     fetchProducts(user!.uid, type);
   }
 
-  // fetchProducts(uid, type) async {
-  //   dynamic result = await OrderProductManager().getUserOrderList(uid, type);
-  //
-  //   if (result == null) {
-  //     print("Product list null");
-  //   } else {
-  //     setState(() {
-  //       products = result;
-  //     });
-  //   }
-  // }
+  fetchProducts(uid, type) async {
+    dynamic result = await OrderProductManager().getUserOrderList(uid, type);
+
+    if (result == null) {
+      print("Product list null");
+    } else {
+      setState(() {
+        products = result;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,16 +202,16 @@ class _OrderState extends State<Order> {
       ),
     );
   }
-  // void cancelOrder(id) async {
-  //   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-  //   await firebaseFirestore
-  //       .collection("users")
-  //       .doc(user!.uid)
-  //       .collection("order")
-  //       .doc(id.toString())
-  //       .update({'orderType': "cancelled"});
-  //   products.clear();
-  //   Fluttertoast.showToast(msg: "Order cancelled");
-  //   fetchProducts(user!.uid, type);
-  // }
+  void cancelOrder(id) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    await firebaseFirestore
+        .collection("users")
+        .doc(user!.uid)
+        .collection("order")
+        .doc(id.toString())
+        .update({'orderType': "cancelled"});
+    products.clear();
+    Fluttertoast.showToast(msg: "Order cancelled");
+    fetchProducts(user!.uid, type);
+  }
 }
