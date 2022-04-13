@@ -6,7 +6,7 @@ import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/textfield.dart';
-
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 class Signup extends StatefulWidget {
   const Signup({Key? key}) : super(key: key);
 
@@ -72,7 +72,14 @@ class _SignupState extends State<Signup> {
                       SignInButton(
                         Buttons.Facebook,
                         mini: true,
-                        onPressed: () {},
+                        onPressed: () {
+                          signInWithFacebook() .then((value) => {sendFbData()})
+                              .catchError((e) {
+                            Fluttertoast.showToast(msg: e!.message);
+                            var snackBar = SnackBar(content: Text(e!.message));
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          });
+                          },
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30)),
                       ),
@@ -224,7 +231,20 @@ class _SignupState extends State<Signup> {
           ),
         ));
   }
+  Future<UserCredential> signInWithFacebook() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login(
+      permissions: ['email']
+    );
 
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+    final userData =await FacebookAuth.instance.getUserData();
+    final userEmail =  userData["email"];
+    print(userEmail);
+    // Once signed in, return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  }
   void signup(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       await _auth
@@ -237,7 +257,26 @@ class _SignupState extends State<Signup> {
       });
     }
   }
+  sendFbData()async{
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = _auth.currentUser;
+    print(user!.uid);
+    UserModel userModel = UserModel();
+    userModel.email = user.email;
+    userModel.uid = user.uid;
+    userModel.name = user.email;
+    userModel.phone = "";
+    userModel.password = "";
 
+    await firebaseFirestore
+        .collection("users")
+        .doc(user.uid)
+        .set(userModel.toMap());
+    Fluttertoast.showToast(msg: "Account created successfully");
+    var snackBar = SnackBar(content: Text("Account created successfully"));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Navigator.pushNamed(context, "/home");
+  }
   sendData() async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _auth.currentUser;
