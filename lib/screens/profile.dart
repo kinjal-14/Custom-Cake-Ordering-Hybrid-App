@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../models/user_model.dart';
 import '../widgets/appbar_iconbutton.dart';
@@ -18,7 +19,6 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-
   User? user = FirebaseAuth.instance.currentUser;
   UserModel currentUser = UserModel();
 
@@ -31,21 +31,25 @@ class _ProfileState extends State<Profile> {
         .get()
         .then((value) {
       currentUser = UserModel.fromMap(value.data());
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
 
   final _formKey = GlobalKey<FormState>();
-
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController phoneNumberController = new TextEditingController();
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final TextEditingController nameController = new TextEditingController()..text = currentUser.name.toString() ;
-    final TextEditingController phoneNumberController =
-    new TextEditingController()..text = currentUser.phone.toString();
-    final TextEditingController emailController = new TextEditingController()..text = currentUser.email.toString();
-    final TextEditingController passwordController = new TextEditingController()..text = currentUser.password.toString();
+    nameController = new TextEditingController()
+      ..text = currentUser.name.toString();
+    phoneNumberController = new TextEditingController()
+      ..text = currentUser.phone.toString();
+    emailController = new TextEditingController()
+      ..text = currentUser.email.toString();
+    passwordController = new TextEditingController()
+      ..text = currentUser.password.toString();
     return Scaffold(
       appBar: Appbar(title: "PROFILE"),
       body: Padding(
@@ -90,9 +94,9 @@ class _ProfileState extends State<Profile> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                         child: CustomTextField(
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -117,9 +121,7 @@ class _ProfileState extends State<Profile> {
                             if (value!.isEmpty) {
                               return ("Please Enter Your Mobile Number");
                             }
-                            if (!RegExp(
-                                "^\\d{10}\$")
-                                .hasMatch(value)) {
+                            if (!RegExp("^\\d{10}\$").hasMatch(value)) {
                               return ("Please Enter a valid Mobile Number");
                             }
 
@@ -135,13 +137,15 @@ class _ProfileState extends State<Profile> {
                           action: TextInputAction.next,
                         )),
                     Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                         child: CustomTextField(
                           validator: (value) {
                             if (value!.isEmpty) {
                               return ("Please Enter Your Email");
                             }
-                            if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                            if (!RegExp(
+                                    "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
                                 .hasMatch(value)) {
                               return ("Please Enter a valid email");
                             }
@@ -187,19 +191,68 @@ class _ProfileState extends State<Profile> {
                                 fontWeight: FontWeight.bold, fontSize: 19),
                             primary: Color(0xfff77883),
                             minimumSize:
-                            Size((MediaQuery.of(context).size.width), 55.0),
+                                Size((MediaQuery.of(context).size.width), 55.0),
                             shape: StadiumBorder()),
-                        onPressed: () {},
+                        onPressed: () {
+                          update();
+                        },
                         child: const Text('Update'),
                       ),
                     ),
-
                   ],
-                ),),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void update() async {
+    if (_formKey.currentState!.validate()) {
+      sendData();
+    }
+  }
+
+  resetEmail(String newEmail) async {
+    var message;
+    user?.updateEmail(newEmail);
+    // User? user1 = await FirebaseAuth.instance.currentUser;
+    // user1.updateEmail(newEmail)
+    // user1?.updateEmail(newEmail)
+    //     .then(
+    //       (value) => message = 'Success',
+    // )
+    //     .catchError((onError) => message = 'error');
+    // print(message);
+  }
+
+  sendData() async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    UserModel userModel = UserModel();
+    userModel.email = emailController.text;
+    userModel.uid = user!.uid;
+    userModel.name = nameController.text;
+    userModel.phone = phoneNumberController.text;
+    userModel.password = passwordController.text;
+
+    if (user?.email != emailController.text) {
+      resetEmail(emailController.text.toString());
+    }
+
+    user
+        ?.updatePassword(passwordController.text)
+        .then((value) => print("success"))
+        .catchError((onError) => "error");
+    await firebaseFirestore
+        .collection("users")
+        .doc(user!.uid)
+        .set(userModel.toMap());
+    Fluttertoast.showToast(msg: "Profile data updated successfully");
+
+    // Navigator.pushNamed(context, "/home");
   }
 }
