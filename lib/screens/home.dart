@@ -1,7 +1,6 @@
-
-
 import 'package:cake_dreams/widgets/appbar_iconbutton.dart';
 import 'package:cake_dreams/widgets/custom_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +12,9 @@ import '../main.dart';
 import '../models/premade_products.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+
+import '../models/user_model.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -22,6 +24,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   User? user = FirebaseAuth.instance.currentUser;
+  UserModel currentUser = UserModel();
   var accountpage = "/login";
   var cartpage = "/login";
   var customizepage = "/login";
@@ -45,6 +48,16 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user?.uid)
+        .get()
+        .then((value) {
+      this.currentUser = UserModel.fromMap(value.data());
+      setState(() {
+
+      });
+    });
     fetchProducts();
     FirebaseMessaging.onMessage.listen((event) {
       print("FCM message received");
@@ -98,7 +111,9 @@ class _HomeState extends State<Home> {
                     radius: 30.0,
                     bg_color: Color(0xfff77883),
                     color: Colors.white,
-                    icon_name: Icon(Icons.person_outlined),
+                    icon_name:
+                            Icon(Icons.person_outlined),
+
                     onclick: () {
                       if (user != null) {
                         accountpage = "/account";
@@ -108,6 +123,7 @@ class _HomeState extends State<Home> {
                       Navigator.pushNamed(context, accountpage);
                     },
                   ),
+
                   SizedBox(
                     width: (MediaQuery.of(context).size.width) / 1.5,
                   ),
@@ -128,6 +144,26 @@ class _HomeState extends State<Home> {
                     },
                   ),
                 ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: 95,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25.0),
+              child:user != null?
+              Text(
+                "${currentUser.name}",
+                style: TextStyle(
+                    fontSize: 17.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600),
+              ):Text(
+                "Guest",
+                style: TextStyle(
+                    fontSize: 17.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -164,7 +200,7 @@ class _HomeState extends State<Home> {
                       },
                     ),
                     SizedBox(
-                      width: (MediaQuery.of(context).size.width) / 6.3,
+                      width: (MediaQuery.of(context).size.width) / 4.8,
                     ),
                     CustomButton(
                       fontsize: 18.0,
@@ -192,7 +228,7 @@ class _HomeState extends State<Home> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     InkWell(
-                      onTap: (){
+                      onTap: () {
                         sendNotification();
                       },
                       child: Text(
@@ -211,7 +247,7 @@ class _HomeState extends State<Home> {
                         Navigator.pushNamed(context, "/pre-made");
                       },
                       child: Text(
-                        "View All",
+                        "",
                         style: TextStyle(
                             fontSize: 16.0,
                             color: Color(0xfff77883),
@@ -239,14 +275,13 @@ class _HomeState extends State<Home> {
                         padding: EdgeInsets.only(right: 5.0),
                         child: InkWell(
                           onTap: () => {
-                            if(user != null){
-                              Navigator.pushNamed(context, "/detail",
-                                  arguments: products[index].id)
-                            }
-                            else{
-
-                            }
-
+                            if (user != null)
+                              {
+                                Navigator.pushNamed(context, "/detail",
+                                    arguments: products[index].id)
+                              }
+                            else
+                              {}
                           },
                           child: Container(
                             margin: EdgeInsets.only(right: 4.0),
@@ -395,20 +430,22 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-  void sendNotification(){
+
+  void sendNotification() {
     tz.initializeTimeZones();
     var time = DateTime.now().add(Duration(seconds: 10));
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails('your channel id', 'your channel name',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
-    const IOSNotificationDetails  iosPlatformChannelSpecifics=
-    IOSNotificationDetails(
-       presentAlert: true,presentBadge: true,presentSound: true);
-    const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics,iOS: iosPlatformChannelSpecifics);
+        AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const IOSNotificationDetails iosPlatformChannelSpecifics =
+        IOSNotificationDetails(
+            presentAlert: true, presentBadge: true, presentSound: true);
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iosPlatformChannelSpecifics);
     // flutterLocalNotificationsPlugin.schedule(
     //     0, 'plain title', 'plain body', platformChannelSpecifics,
     //     payload: 'item x');
@@ -423,7 +460,6 @@ class _HomeState extends State<Home> {
                 channelDescription: 'your channel description')),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime);
-
+            UILocalNotificationDateInterpretation.absoluteTime);
   }
 }
