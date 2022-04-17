@@ -164,7 +164,7 @@ class _OrderState extends State<Order> {
                                 ],
                               ),
                               widget3: Text(
-                                "Orderd on : 15th march",
+                                "",
                                 style: TextStyle(
                                     fontSize: 16.0,
                                     color: Colors.black,
