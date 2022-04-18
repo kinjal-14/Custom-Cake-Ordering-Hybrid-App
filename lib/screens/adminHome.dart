@@ -76,7 +76,7 @@ class _AdminHomeState extends State<AdminHome> {
                   FirebaseAuth.instance.signOut();
                   newProducts.clear();
                   cancelProducts.clear();
-                  Navigator.pushNamed(context, "/home");
+                  Navigator.pushNamed(context, "/login");
                 }),
           ),
         ],
@@ -170,7 +170,7 @@ class _AdminHomeState extends State<AdminHome> {
                                 ],
                               ),
                               widget3: Text(
-                                "Orderd on : 15th march",
+                                "",
                                 style: TextStyle(
                                     fontSize: 16.0,
                                     color: Colors.black,
