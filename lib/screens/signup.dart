@@ -2,6 +2,7 @@ import 'package:cake_dreams/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,6 +26,7 @@ class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -86,28 +88,32 @@ class _SignupState extends State<Signup> {
                     ],
                   ),
                 ),
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                    child: CustomTextField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return ("Please Enter Your Name");
-                        }
+                AutofillGroup(
+                  child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                      child: CustomTextField(
+                        autoHint: [AutofillHints.name],
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return ("Please Enter Your Name");
+                          }
 
-                        return null;
-                      },
-                      hint: "Full Name",
-                      secure: false,
-                      controller: nameController,
-                      // keyboardtype: TextInputType.emailAddress,
-                      onSaved: (value) {
-                        nameController.text = value!;
-                      },
-                      action: TextInputAction.next,
-                    )),
+                          return null;
+                        },
+                        hint: "Full Name",
+                        secure: false,
+                        controller: nameController,
+                        // keyboardtype: TextInputType.emailAddress,
+                        onSaved: (value) {
+                          nameController.text = value!;
+                        },
+                        action: TextInputAction.next,
+                      )),
+                ),
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: CustomTextField(
+                      autoHint: [AutofillHints.telephoneNumberNational],
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("Please Enter Your Mobile Number");
@@ -132,6 +138,7 @@ class _SignupState extends State<Signup> {
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                     child: CustomTextField(
+                      autoHint: [AutofillHints.email],
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("Please Enter Your Email");
@@ -154,6 +161,8 @@ class _SignupState extends State<Signup> {
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: CustomTextField(
+                      onComplete: () => TextInput.finishAutofillContext(),
+                      autoHint: [AutofillHints.password],
                       validator: (value) {
                         RegExp regex = new RegExp(r'^.{6,}$');
                         if (value!.isEmpty) {
