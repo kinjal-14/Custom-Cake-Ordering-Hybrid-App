@@ -51,18 +51,19 @@ class _ProfileState extends State<Profile> {
     passwordController = new TextEditingController()
       ..text = currentUser.password.toString();
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: Appbar(title: "PROFILE"),
       body: Padding(
-        padding: const EdgeInsets.only(top: 20.0),
+        padding: const EdgeInsets.only(top: 10.0),
         child: Container(
           // color: Colors.amber,
-          height: (MediaQuery.of(context).size.height) / 1.5,
+          height: (MediaQuery.of(context).size.height) / 2,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Container(
                 // color: Colors.white,
-                height: (MediaQuery.of(context).size.height) / 7,
+                height: (MediaQuery.of(context).size.height) / 8,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -80,7 +81,7 @@ class _ProfileState extends State<Profile> {
                           child: CircleAvatar(
                             backgroundImage:
                                 AssetImage("assets/images/cake19.jpg"),
-                            radius: 60,
+                            radius: 50,
                           ),
                         ),
                       ],
@@ -96,7 +97,7 @@ class _ProfileState extends State<Profile> {
                   children: [
                     Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         child: CustomTextField(
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -138,7 +139,7 @@ class _ProfileState extends State<Profile> {
                         )),
                     Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         child: CustomTextField(
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -181,7 +182,7 @@ class _ProfileState extends State<Profile> {
                           action: TextInputAction.done,
                         )),
                     SizedBox(
-                      height: 45.0,
+                      height: 15.0,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
