@@ -16,7 +16,7 @@ class PreMade extends StatefulWidget {
 class _PreMadeState extends State<PreMade> {
   User? user = FirebaseAuth.instance.currentUser;
   var cartpage = "/login";
-  // final List<PreMadeProducts> products = PreMadeProducts.products;
+
   List<PreMadeProducts> products = [];
 
   String selectedValue = 'Name';
