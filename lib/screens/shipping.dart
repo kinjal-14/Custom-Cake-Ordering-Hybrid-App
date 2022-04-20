@@ -41,18 +41,19 @@ class _ShippingState extends State<Shipping> {
     var products = arg['products'];
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: Appbar(title: "SHIPPING"),
       body: Padding(
-        padding: const EdgeInsets.only(top: 20.0),
+        padding: const EdgeInsets.only(top: 3.0),
         child: Container(
           // color: Colors.amber,
-          height: (MediaQuery.of(context).size.height) / 1.35,
+          height: (MediaQuery.of(context).size.height) / 1.74,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Container(
                 // color: Colors.white,
-                height: (MediaQuery.of(context).size.height) / 7,
+                height: (MediaQuery.of(context).size.height) / 9,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -66,11 +67,11 @@ class _ShippingState extends State<Shipping> {
                                     color: Colors.black12, blurRadius: 5.0),
                               ],
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(55))),
+                                  BorderRadius.all(Radius.circular(45))),
                           child: CircleAvatar(
                             backgroundImage:
                                 AssetImage("assets/images/cake4.jpg"),
-                            radius: 60,
+                            radius: 40,
                           ),
                         ),
                       ],
@@ -86,7 +87,7 @@ class _ShippingState extends State<Shipping> {
                   children: [
                     Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                         child: CustomTextField(
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -102,11 +103,13 @@ class _ShippingState extends State<Shipping> {
                           onSaved: (value) {
                             address1Controller.text = value!;
                           },
+                          autoHint: [AutofillHints.streetAddressLevel1],
+                          type: TextInputType.streetAddress,
                           action: TextInputAction.next,
                         )),
                     Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                         child: CustomTextField(
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -122,12 +125,15 @@ class _ShippingState extends State<Shipping> {
                           onSaved: (value) {
                             address2Controller.text = value!;
                           },
+                          autoHint: [AutofillHints.streetAddressLevel2],
+                          type: TextInputType.streetAddress,
                           action: TextInputAction.next,
                         )),
                     Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                         child: CustomTextField(
+                          autoHint: [AutofillHints.postalCode],
                           validator: (value) {
                             if (value!.isEmpty) {
                               return ("Please Enter Your Postal Code");
@@ -141,12 +147,15 @@ class _ShippingState extends State<Shipping> {
                           onSaved: (value) {
                             postalCodeController.text = value!;
                           },
+                          type: TextInputType.streetAddress,
                           action: TextInputAction.next,
                         )),
                     Padding(
+
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                         child: CustomTextField(
+                          autoHint: [AutofillHints.addressCity],
                           validator: (value) {
                             if (value!.isEmpty) {
                               return ("Please Enter Your City");
@@ -160,12 +169,14 @@ class _ShippingState extends State<Shipping> {
                           onSaved: (value) {
                             cityController.text = value!;
                           },
+                          type: TextInputType.streetAddress,
                           action: TextInputAction.next,
                         )),
                     Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                         child: CustomTextField(
+                          autoHint: [AutofillHints.addressState],
                           validator: (value) {
                             if (value!.isEmpty) {
                               return ("Please Enter Your State");
@@ -175,14 +186,14 @@ class _ShippingState extends State<Shipping> {
                           hint: "State",
                           secure: false,
                           controller: stateController,
-                          // keyboardtype: TextInputType.emailAddress,
+                          type: TextInputType.streetAddress,
                           onSaved: (value) {
                             stateController.text = value!;
                           },
                           action: TextInputAction.done,
                         )),
                     SizedBox(
-                      height: 15.0,
+                      height: 4.0,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -192,7 +203,7 @@ class _ShippingState extends State<Shipping> {
                                 fontWeight: FontWeight.bold, fontSize: 19),
                             primary: Color(0xfff77883),
                             minimumSize:
-                                Size((MediaQuery.of(context).size.width), 55.0),
+                                Size((MediaQuery.of(context).size.width), 50.0),
                             shape: StadiumBorder()),
                         onPressed: () async{
                           await buy(subtotal, delivery, tax,total, address1Controller.text, address2Controller.text, postalCodeController.text,cityController.text, stateController.text,products);
