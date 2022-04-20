@@ -30,16 +30,7 @@ class _DetailState extends State<Detail> {
     // fetchProducts();
   }
 
-  // fetchProducts() async {
-  //   dynamic result = await ProductManager().getProductList();
-  //   if (result == null) {
-  //     print("Product list null");
-  //   } else {
-  //     setState(() {
-  //       products = result;
-  //     });
-  //   }
-  // }
+
   fetchProduct(int id) {
     FirebaseFirestore.instance
         .collection("products")
