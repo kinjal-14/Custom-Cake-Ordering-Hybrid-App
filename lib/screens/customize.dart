@@ -144,39 +144,39 @@ class _CustomizeState extends State<Customize> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 6.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomButton(
                         fontsize: 16.0,
-                        buttonsize: Size(50.0, 55.0),
+                        buttonsize: Size(80.0, 55.0),
                         bgcolor: Color(0xfff77883),
                         text: 'Type',
                         onclick: () {},
                       ),
                       CustomButton(
                         fontsize: 16.0,
-                        buttonsize: Size(60.0, 55.0),
+                        buttonsize: Size(80.0, 55.0),
                         bgcolor: shapecolor,
                         text: 'Shape',
                         onclick: () {},
                       ),
                       CustomButton(
                         fontsize: 16.0,
-                        buttonsize: Size(60.0, 55.0),
+                        buttonsize: Size(80.0, 55.0),
                         bgcolor: sizecolor,
                         text: 'Size',
                         onclick: () {},
                       ),
                       CustomButton(
                         fontsize: 16.0,
-                        buttonsize: Size(60.0, 55.0),
+                        buttonsize: Size(80.0, 55.0),
                         bgcolor: flavourcolor,
                         text: 'Flavour',
                         onclick: () {},
                       ),
                       CustomButton(
                         fontsize: 16.0,
-                        buttonsize: Size(60.0, 55.0),
+                        buttonsize: Size(80.0, 55.0),
                         bgcolor: designcolor,
                         text: 'Design',
                         onclick: () {},
