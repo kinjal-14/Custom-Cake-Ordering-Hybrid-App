@@ -198,7 +198,7 @@ class _AdminOrdersState extends State<AdminOrders> {
                                   ],
                                 ),
                                 widget3: Text(
-                                  "Orderd on : 15th march",
+                                  "",
                                   style: TextStyle(
                                       fontSize: 16.0,
                                       color: Colors.black,
