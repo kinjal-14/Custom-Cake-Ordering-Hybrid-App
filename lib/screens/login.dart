@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../widgets/textfield.dart';
@@ -20,6 +21,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -48,107 +50,114 @@ class _LoginState extends State<Login> {
           padding: EdgeInsets.only(top: 30.0),
           child: Form(
             key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                    child: CustomTextField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return ("Please Enter Your Email");
-                        }
-                        if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                            .hasMatch(value)) {
-                          return ("Please Enter a valid email");
-                        }
-                        return null;
-                      },
-                      hint: "Email Address",
-                      secure: false,
-                      controller: emailController,
-                      // keyboardtype: TextInputType.emailAddress,
-                      onSaved: (value) {
-                        emailController.text = value!;
-                      },
-                      action: TextInputAction.next,
-                    )),
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomTextField(
-                      validator: (value) {
-                        RegExp regex = new RegExp(r'^.{6,}$');
-                        if (value!.isEmpty) {
-                          return ("Password is required for login");
-                        }
-                        if (!regex.hasMatch(value)) {
-                          return ("Please Enter valid Password(Min. 6 Characters)");
-                        }
-                      },
-                      hint: "Password",
-                      secure: true,
-                      controller: passwordController,
-                      onSaved: (value) {
-                        passwordController.text = value!;
-                      },
-                      action: TextInputAction.done,
-                    )),
-                SizedBox(
-                  height: 45.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        textStyle: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 19),
-                        primary: Color(0xfff77883),
-                        minimumSize:
-                            Size((MediaQuery.of(context).size.width), 55.0),
-                        shape: StadiumBorder()),
-                    onPressed: () { login(emailController.text, passwordController.text);},
-                    child: const Text('Login'),
+            child: AutofillGroup(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                      child: CustomTextField(
+                        autoHint: [AutofillHints.email],
+                        type: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return ("Please Enter Your Email");
+                          }
+                          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                              .hasMatch(value)) {
+                            return ("Please Enter a valid email");
+                          }
+                          return null;
+                        },
+                        hint: "Email Address",
+                        secure: false,
+                        controller: emailController,
+                        // keyboardtype: TextInputType.emailAddress,
+                        onSaved: (value) {
+                          emailController.text = value!;
+                        },
+                        action: TextInputAction.next,
+                      )),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomTextField(
+                        autoHint: [AutofillHints.password],
+                        onComplete: () => TextInput.finishAutofillContext(),
+                        validator: (value) {
+                          RegExp regex = new RegExp(r'^.{6,}$');
+                          if (value!.isEmpty) {
+                            return ("Password is required for login");
+                          }
+                          if (!regex.hasMatch(value)) {
+                            return ("Please Enter valid Password(Min. 6 Characters)");
+                          }
+                        },
+                        hint: "Password",
+                        secure: true,
+                        controller: passwordController,
+                        onSaved: (value) {
+                          passwordController.text = value!;
+                        },
+                        action: TextInputAction.done,
+                      )),
+                  SizedBox(
+                    height: 45.0,
                   ),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text(
-                  "Or",
-                  style: TextStyle(
-                      fontSize: 17.0,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text(
-                  "Don't have an account?",
-                  style: TextStyle(
-                      fontSize: 14.0,
-                      color: Color(0xfff77883),
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        textStyle: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 19),
-                        primary: Color(0xfff77883),
-                        minimumSize:
-                            Size((MediaQuery.of(context).size.width), 55.0),
-                        shape: StadiumBorder()),
-                    onPressed: () => Navigator.pushNamed(context, "/signup"),
-                    child: const Text('Sign up'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          textStyle: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 19),
+                          primary: Color(0xfff77883),
+                          minimumSize:
+                              Size((MediaQuery.of(context).size.width), 55.0),
+                          shape: StadiumBorder()),
+                      onPressed: () {  TextInput.finishAutofillContext();
+                        login(emailController.text, passwordController.text);},
+                      child: const Text('Login'),
+                    ),
                   ),
-                ),
-              ],
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Text(
+                    "Or",
+                    style: TextStyle(
+                        fontSize: 17.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Text(
+                    "Don't have an account?",
+                    style: TextStyle(
+                        fontSize: 14.0,
+                        color: Color(0xfff77883),
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          textStyle: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 19),
+                          primary: Color(0xfff77883),
+                          minimumSize:
+                              Size((MediaQuery.of(context).size.width), 55.0),
+                          shape: StadiumBorder()),
+                      onPressed: () => Navigator.pushNamed(context, "/signup"),
+                      child: const Text('Sign up'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ));
