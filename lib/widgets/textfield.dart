@@ -10,6 +10,9 @@ class CustomTextField extends StatelessWidget {
   var onSaved;
   var action;
   var validator;
+  var autoHint;
+  var onComplete;
+  var type;
   CustomTextField({
     this.hint,
     this.secure,
@@ -18,28 +21,36 @@ class CustomTextField extends StatelessWidget {
     this.onSaved,
     this.action,
     this.validator,
+    this.autoHint,
+    this.onComplete,
+    this.type,
   });
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      // initialValue: "hello",
-      autofocus: false,
-      // keyboardType: keyboardtype,
-      validator: validator,
-      controller: controller,
-      obscureText: secure,
-      onSaved: onSaved,
-      textInputAction: action,
-      decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.black, width: 1.3),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.black, width: 1.3),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          hintText: hint),
+    return AutofillGroup(
+      child: TextFormField(
+        keyboardType: type,
+        onEditingComplete: onComplete,
+        // initialValue: "hello",
+        autofocus: false,
+        // keyboardType: keyboardtype,
+        autofillHints: autoHint,
+        validator: validator,
+        controller: controller,
+        obscureText: secure,
+        onSaved: onSaved,
+        textInputAction: action,
+        decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.black, width: 1.3),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.black, width: 1.3),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            hintText: hint),
+      ),
     );
   }
 }
